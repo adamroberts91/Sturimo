@@ -1,5 +1,6 @@
 <?php
 include("includes/classes/Account.php");
+include("includes/classes/Constants.php");
 $account = new Account();
 
 include("includes/handlers/register-handler.php");
@@ -32,30 +33,38 @@ include("includes/handlers/login-handler.php");
             <p>
                 <label for="username">Username</label>
                 <input id="username" type="text" name="username" required />
+                <?php echo $account->getError(Constants::$usernameCharacters); ?>
             </p>
             <p>
                 <label for="firstName">First Name</label>
                 <input id="firstName" type="text" name="firstName" required />
+                <?php echo $account->getError(Constants::$firstNameCharacters); ?>
             </p>
             <p>
                 <label for="lastName">Last Name</label>
                 <input id="lastName" type="text" name="lastName" required />
+                <?php echo $account->getError(Constants::$lastNameCharacters); ?>
             </p>
             <p>
                 <label for="email">Email</label>
                 <input id="email" type="email" name="email" required />
+                <?php echo $account->getError(Constants::$emailInvalid); ?>
             </p>
             <p>
                 <label for="email2">Confirm Email</label>
                 <input id="email2" type="email" name="email2" required />
+                <?php echo $account->getError(Constants::$emailsDoNotMatch); ?>
             </p>
             <p>
                 <label for="password">Password</label>
                 <input id="password" type="password" name="password" required />
+                <?php echo $account->getError(Constants::$passwordNotAlpha); ?>
+                <?php echo $account->getError(Constants::$passwordCharacters); ?>
             </p>
             <p>
                 <label for="password2">Confirm Password</label>
                 <input id="password2" type="password" name="password2" required />
+                <?php echo $account->getError(Constants::$passwordsDoNotMatch); ?>
             </p>
             <button type="submit" name="registerButton">Sign Up</button>
         </form>
