@@ -24,19 +24,36 @@ function getInputValue($name) {
     <script src="assets/js/register.js"></script>
 </head>
 <body>
+    <?php
+    if(isset($_POST['registerButton'])) {
+        echo '<script>
+            $(document).ready(() => {
+                $("#loginForm").hide();
+                $("#registerForm").show();
+            });
+        </script>';
+    }
+    else {
+        echo '<script>
+            $(document).ready(() => {
+                $("#loginForm").show();
+                $("#registerForm").hide();
+            });
+        </script>';
+    }
+    ?>
 
-    <script>
 
-    </script>
     <div id="background">
         <div id="loginContainer">
             <div id="inputContainer">
                 <form id="loginForm" action="register.php" method="POST">
                     <h2>Log in to your account</h2>
                     <?php echo $account->getError(Constants::$usernameCharacters); ?>
+                    <?php echo $account->getError(Constants::$loginFailed); ?>
                     <p>
                         <label for="loginUsername">Username</label>
-                        <input id="loginUsername" type="text" name="loginUsername" required />
+                        <input id="loginUsername" type="text" name="loginUsername" value="<?php getInputValue('loginUsername') ?>" required />
                     </p>
                     <p>
                         <label for="loginPassword">Password</label>
@@ -94,6 +111,15 @@ function getInputValue($name) {
                         <span id="hideRegister">Already have an account? Log in here!</span>
                     </div>
                 </form>
+            </div>
+            <div id="loginText">
+                <h1>Get great music, right now</h1>
+                <h2>Listen to thousands of songs for free</h2>
+                <ul>
+                    <li>Discover music you'll fall in love with</li>
+                    <li>Create your own playlist</li>
+                    <li>Follow artists to keep up to date</li>
+                </ul>
             </div>
         </div>
     </div>
