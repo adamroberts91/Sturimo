@@ -1,9 +1,24 @@
 <?php
 Class Account {
     private $errorArray;
+    private $con;
 
-    public function __construct() {
+    public function __construct($con) {
+        $this->con = $con;
         $this->errorArray = [];
+    }
+
+    public function login($username, $password) {
+        $encryptedPassword = md5($password);
+
+        $query = mysqli_query($this->con, "SELECT * FROM users WHERE username='$username' AND password='$encryptedPassword'");
+        if(mysqli_num_rows($query) == 1) {
+            return true;
+        }
+        else {
+            array_push($this->errorArray, Constants::$loginFailed);
+            return false;
+        }
     }
 
     public function register($username, $firstName, $lastName, $email,
@@ -15,8 +30,7 @@ Class Account {
         $this->validatePasswords($password, $password2);
 
         if(empty($this->errorArray)) {
-            //TODO: Insert into DB
-            return true;
+            return $this->insertUserDetails($username, $firstName, $lastName, $email, $password);
         }
         else {
             return false;
@@ -30,13 +44,24 @@ Class Account {
         return "<span class='errorMessage'>$errorMessage</span>";
     }
 
+    private function insertUserDetails($username, $firstName, $lastName, $email, $password) {
+        $encryptedPasswoed = md5($password);
+        $profilePic = "assets/images/profile-pics/head_emerald.png";
+        $date = date("Y-m-d");
+        $result = mysqli_query($this->con, "INSERT INTO users VALUES ('', '$username', '$firstName', '$lastName', '$email', '$encryptedPasswoed', '$date', '$profilePic')");
+        return $result;
+    }
+
     private function validateUsername($username) {
         if(strlen($username) > 25 || strlen($username) < 5) {
             array_push($this->errorArray, Constants::$usernameCharacters);
             return;
         }
 
-        //TODO: Check username exists
+        $checkUsernameQuery = mysqli_query($this->con, "SELECT username FROM users WHERE username='$username'");
+        if(mysqli_num_rows($checkUsernameQuery) != 0) {
+            array_push($this->errorArray, Constants::$usernameExists);
+        }
     }
 
     private function validateFirstName($firstName) {
@@ -64,7 +89,10 @@ Class Account {
             return;
         }
 
-        //TODO: Check email hasn't been used
+        $checkEmailQuery = mysqli_query($this->con, "SELECT email FROM users WHERE email='$email'");
+        if(mysqli_num_rows($checkEmailQuery) != 0) {
+            array_push($this->errorArray, Constants::$emailExists);
+        }
     }
 
     private function validatePasswords($password, $password2) {
