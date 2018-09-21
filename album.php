@@ -11,19 +11,22 @@ else {
 
 }
 
-//Query DB for selected album and assign to variable
-$albumQuery = mysqli_query($con, "SELECT * from albums WHERE id='$albumId'");
-$album = mysqli_fetch_array($albumQuery);
-
-//Take id of album artist
-$artistId = $album['artist'];
-
-//Use Id to query DB for album artist
-$artistQuery = mysqli_query($con, "SELECT * FROM artists WHERE id='$artistId'");
-$artist = mysqli_fetch_array($artistQuery);
-
-echo $artist['name'];
+//Create album and artist objects from id in GET
+$album = new Album($con, $albumId);
+$artist = $album->getArtist();
 ?>
+
+<div class="entityInfo">
+    <div class="leftSection">
+        <img src="<?php echo $album->getArtworkPath(); ?>" alt="<?php echo $album->getTitle(); ?>">
+    </div>
+    <div class="rightSection">
+        <h2><?php echo $album->getTitle() ?></h2>
+        <p><?php echo $artist->getName(); ?></p>
+        <p><?php echo $album->getNumberOfSongs() . " songs" ?></p>
+
+    </div>
+</div>
 
 
 
